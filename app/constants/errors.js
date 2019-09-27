@@ -19,11 +19,7 @@
 // and these error constants are a dependency through lib/core/api.js
 
 module.exports = {
-  E_CARELINK_CREDS: 'Check your CareLink username and password',
-  E_CARELINK_UNSUPPORTED: 'Tidepool does not support Minimed pumps 522, 722 or older, or the newer 6-series pumps. Sorry... If you are no longer using an unsupported pump and still get this message, create a new CareLink account and try uploading again.',
-  E_CARELINK_UPLOAD: 'Error processing & uploading CareLink data',
   E_DEVICE_UPLOAD: 'Something went wrong during device upload',
-  E_FETCH_CARELINK: 'Something went wrong trying to fetch CareLink data',
   E_FILE_EXT: 'Please choose a file ending in ',
   E_HID_CONNECTION: 'Hmm, your device doesn\'t appear to be connected',
   E_INIT: 'Error during app initialization',

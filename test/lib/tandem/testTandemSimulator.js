@@ -201,41 +201,53 @@ describe('tandemSimulator.js', function() {
     });
 
     describe('status', function() {
-      var suspend = {
-        time: '2014-09-25T01:00:00.000Z',
-        deviceTime: '2014-09-25T01:00:00',
-        timezoneOffset: 0,
-        conversionOffset: 0,
-        deviceId: 'tandem12345',
-        type: 'deviceEvent',
-        subType: 'status',
-        status: 'suspended',
-        reason: {suspended: 'automatic'}
-      };
+      var suspend = builder.makeDeviceEventSuspendResume()
+        .with_time('2014-09-25T01:00:00.000Z')
+        .with_deviceTime('2014-09-25T01:00:00')
+        .with_timezoneOffset(0)
+        .with_conversionOffset(0)
+        .with_reason({suspended: 'automatic'});
       var resume = builder.makeDeviceEventResume()
         .with_time('2014-09-25T02:00:00.000Z')
         .with_deviceTime('2014-09-25T02:00:00')
         .with_timezoneOffset(0)
         .with_conversionOffset(0)
-        .with_status('resumed')
         .with_reason({resumed: 'manual'});
-      var expectedResume = _.assign({}, resume);
-      expectedResume = expectedResume.set('previous', suspend).done();
+      var expectedSuspendResume = _.clone(suspend);
+      expectedSuspendResume = expectedSuspendResume.with_duration(60000);
 
-      it('a suspend passes through', function() {
+      it('a suspend without resume gets annotated', function() {
+
+        var basal = builder.makeSuspendBasal()
+          .with_time('2014-09-25T01:00:00.000Z')
+          .with_deviceTime('2014-09-25T01:00:00')
+          .with_timezoneOffset(0)
+          .with_conversionOffset(0);
+
         simulator.suspend(suspend);
-        expect(simulator.getEvents()).deep.equals([suspend]);
+        simulator.basal(basal);
+        simulator.finalBasal();
+
+        basal.annotations = [{code: 'basal/unknown-duration'}];
+
+        var expectedSuspend = _.clone(suspend);
+        expectedSuspend.annotations = [{code: 'status/incomplete-tuple'}];
+        expect(simulator.getEvents()).deep.equals([expectedSuspend.done(), basal.done()]);
       });
 
-      it('a resume passes through', function() {
+      it('a resume without suspend gets annotated', function() {
+        var expectedResume = _.clone(resume);
+        expectedResume.annotations = [{code: 'status/incomplete-tuple'}];
+
         simulator.resume(resume);
-        expect(simulator.getEvents()).deep.equals([resume.done()]);
+
+        expect(simulator.getEvents()).deep.equals([expectedResume.done()]);
       });
 
-      it('a resume includes a previous when preceded by a suspend', function() {
+      it('a suspend and resume is combined into a single event', function() {
         simulator.suspend(suspend);
         simulator.resume(resume);
-        expect(simulator.getEvents()).deep.equals([suspend, expectedResume]);
+        expect(simulator.getEvents()).deep.equals([expectedSuspendResume.done()]);
       });
 
       it('uses the timestamp of the first suspend if multiple suspends appear before a single resume', function() {
@@ -253,7 +265,7 @@ describe('tandemSimulator.js', function() {
         simulator.suspend(suspend);
         simulator.suspend(suspend2);
         simulator.resume(resume);
-        expect(simulator.getEvents()).deep.equals([suspend, expectedResume]);
+        expect(simulator.getEvents()).deep.equals([expectedSuspendResume.done()]);
       });
     });
 
@@ -364,29 +376,6 @@ describe('tandemSimulator.js', function() {
       expect(simulator.getEvents()).deep.equals([expectedFirstBasal]);
     });
 
-    it('sets previous on basals other than the first', function() {
-      var expectedFirstBasal = _.cloneDeep(basal1);
-      expectedFirstBasal = expectedFirstBasal.set('duration', 3600000).done();
-      var expectedSecondBasal = _.cloneDeep(basal2);
-      expectedSecondBasal = expectedSecondBasal.set('duration', 1800000)
-        .set('previous', expectedFirstBasal)
-        .done();
-      var expectedThirdBasal = _.cloneDeep(basal3);
-      expectedThirdBasal = expectedThirdBasal.set('duration', 0)
-        .set('previous', _.omit(expectedSecondBasal, 'previous'))
-        .done();
-      expectedThirdBasal.annotations = [{code: 'basal/unknown-duration'}];
-      simulator.basal(basal1);
-      simulator.basal(basal2);
-      simulator.basal(basal3);
-      simulator.finalBasal();
-      expect(simulator.getEvents()).deep.equals([
-        expectedFirstBasal,
-        expectedSecondBasal,
-        expectedThirdBasal
-      ]);
-    });
-
     it('temp basal has percentage and payload', function() {
       var suppressed = builder.makeScheduledBasal()
         .with_time('2014-09-25T18:05:00.000Z')
@@ -400,8 +389,7 @@ describe('tandemSimulator.js', function() {
         .with_deviceTime('2014-09-25T18:10:00')
         .with_timezoneOffset(0)
         .with_conversionOffset(0)
-        .with_duration(1800000)
-        .with_previous(suppressed.done());
+        .with_duration(1800000);
       var tempBasalStart = {
             type: 'temp-basal',
             subType: 'start',
@@ -468,13 +456,13 @@ describe('tandemSimulator.js', function() {
         .with_timezoneOffset(0)
         .with_conversionOffset(0)
         .with_duration(6600000)
-        .with_previous(suppressed.done())
         .set('suppressed',{
                     type: 'basal',
                     deliveryType: 'scheduled',
                     rate: 1.3
                   })
         .set('percent', 0.65)
+        .set('rate', 0.845)
         .set('deviceId', 'tandem12345')
         .with_payload({'logIndices':1, duration: 1500000})
         .done();
@@ -533,12 +521,10 @@ describe('tandemSimulator.js', function() {
       var expectedTempBasal = tempBasal.with_payload({duration:1800000})
                                         .set('percent',0.65)
                                         .with_duration(900000)
-                                        .with_previous(suppressed.done())
                                         .done();
       var expectedTempBasal2 = tempBasal2.with_payload({duration:1800000})
                                         .set('percent',0.65)
                                         .with_duration(900000)
-                                        .with_previous(_.omit(expectedTempBasal, 'previous'))
                                         .done();
 
       simulator.basal(suppressed);
@@ -588,7 +574,6 @@ describe('tandemSimulator.js', function() {
       simulator.basal(basal2);
 
       var expectedSuspend = suspend.set('duration', 1800000)
-        .set('previous', basal.done())
         .done();
 
       expect(simulator.getEvents()).deep.equals([basal.done(),expectedSuspend]);
@@ -665,7 +650,6 @@ describe('tandemSimulator.js', function() {
       var expectedNewDay = _.cloneDeep(temp);
       expectedNewDay.percent = 0.5;
       expectedNewDay.payload = {duration:1800000};
-      expectedNewDay.previous = expectedTempBasal;
       expectedNewDay.time = '2014-09-26T00:00:00.000Z';
       expectedNewDay.deviceTime = '2014-09-26T00:00:00';
       expectedNewDay.annotations = [{code: 'tandem/basal/fabricated-from-new-day'}];
@@ -834,7 +818,7 @@ describe('tandemSimulator.js', function() {
       simulator.basal(suspend);
       simulator.newDay(newDay);
 
-      expect(simulator.getEvents()).deep.equals([basal.done(),suspendEvent]);
+      expect(simulator.getEvents()).deep.equals([basal.done()]);
     });
 
     it('a new-day event during a cancelled temp basal', function() {
@@ -879,7 +863,6 @@ describe('tandemSimulator.js', function() {
       var expectedNewDay = _.cloneDeep(temp);
       expectedNewDay.percent = 0.5;
       expectedNewDay.payload = {duration:1800000};
-      expectedNewDay.previous = expectedTempBasal;
       expectedNewDay.time = '2014-09-26T00:00:00.000Z';
       expectedNewDay.deviceTime = '2014-09-26T00:00:00';
       expectedNewDay.annotations = [{code: 'tandem/basal/fabricated-from-new-day'}];

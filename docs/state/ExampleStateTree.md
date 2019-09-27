@@ -8,20 +8,6 @@ The JSON that follows on this page represents a snapshot of the Tidepool Uploade
 ```json
 {
   "devices": {
-    "carelink": {
-      "instructions": ["Import from CareLink", "(We will not store your credentials)"],
-      "isFetching": false,
-      "key": "carelink",
-      "name": "Medtronic",
-      "selectName": "Medtronic (from CareLink)",
-      "source": {
-        "type": "carelink"
-      },
-      "enabled": {
-        "mac": true,
-        "win": true
-      }
-    },
     "omnipod": {
       "instructions": "Choose .ibf file from PDM",
       "key": "omnipod",
@@ -94,9 +80,6 @@ The JSON that follows on this page represents a snapshot of the Tidepool Uploade
   "uploadProgress": null,
   "uploadsByUser": {
     "4a86ec44ff": {
-      "carelink": {
-        "history": []
-      },
       "bayercontournext": {
         "history": []
       }
@@ -115,7 +98,7 @@ The JSON that follows on this page represents a snapshot of the Tidepool Uploade
       }
     },
     "a9c0de41c5": {
-      "carelink": {
+      "medtronic": {
         "history": []
       }
     }
@@ -210,7 +193,7 @@ The JSON that follows on this page represents a snapshot of the Tidepool Uploade
   "targetDevices": {
     "77541c89ba": ["omnipod", "dexcom"],
     "a6328f570d": ["tandem"],
-    "4a86ec44ff": ["carelink", "bayercontournext"]
+    "4a86ec44ff": ["medtronic", "bayercontournext"]
   },
   "targetTimezones": {
     "77541c89ba": "US/Mountain",

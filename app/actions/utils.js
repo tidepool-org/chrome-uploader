@@ -38,9 +38,6 @@ export function getUploadTrackingId(device) {
   if (source.type === 'device' || source.type === 'block') {
     return source.driverId;
   }
-  if (source.type === 'carelink') {
-    return 'CareLink';
-  }
   return null;
 }
 

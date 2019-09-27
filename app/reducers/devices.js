@@ -11,16 +11,6 @@ const devices = {
     source: {type: 'device', driverId: 'AccuChekUSB'},
     enabled: {mac: true, win: true, linux: true}
   },
-  carelink: {
-    instructions: ['Import from CareLink', '(We will not store your credentials)'],
-    isFetching: false,
-    key: 'carelink',
-    name: 'Medtronic',
-    // for the device selection list
-    selectName: 'Medtronic (CareLink import)',
-    source: {type: 'carelink'},
-    enabled: {mac: true, win: true, linux: true}
-  },
   medtronic: {
     instructions: 'Connect your Contour Next Link to your computer',
     image: {

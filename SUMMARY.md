@@ -39,13 +39,12 @@
    * [Trividia TRUE METRIX meters](docs/checklists/trividiaTrueMetrix.md)
 
 * CLI tools
-   * [CareLink CLI tool](lib/drivers/carelink/cli/README.md)
+   * [Medtronic 5/7-series CLI tool](lib/drivers/medtronic/cli/README.md)
    * [OmniPod CLI tool](lib/drivers/insulet/cli/README.md)
 
 * [miscellaneous](docs/misc/README.md)
    * ["bootstrapping" to UTC (BtUTC)](docs/BootstrappingToUTC.md)
    * [use of CSS modules](docs/misc/CSSModules.md)
    * [PWD "simulators"](docs/misc/PWDSimulators.md)
-   * [challenges of flat basal profiles](docs/misc/FlatRateBasals.md)
-   * [2015.06 CareLink CSV updates](docs/misc/2015.06.29CareLinkCSVChanges.md)
-   * [Medtronic packet diagrams](lib/medtronic/docs/packetStructure.md)
+   * [Medtronic 5/7-series packet diagrams](lib/medtronic/docs/packetStructure.md)
+   * [Medtronic 6-series packet diagrams](lib/medtronic600/docs/packetStructure.md)

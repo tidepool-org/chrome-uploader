@@ -34,7 +34,6 @@ import personUtils from '../../lib/core/personUtils';
 
 let services = {};
 let versionInfo = {};
-let daysForCareLink = null;
 let hostMap = {
   'darwin': 'mac',
   'win32' : 'win',
@@ -55,8 +54,7 @@ export function doAppInit(opts, servicesToInit) {
     services = servicesToInit;
     versionInfo.semver = opts.version;
     versionInfo.name = opts.namedVersion;
-    daysForCareLink = opts.DEFAULT_CARELINK_DAYS;
-    const { api, carelink, device, localStore, log } = services;
+    const { api, device, localStore, log } = services;
 
     dispatch(syncActions.initRequest());
     dispatch(syncActions.hideUnavailableDevices(opts.os || hostMap[os.platform()]));
@@ -71,47 +69,41 @@ export function doAppInit(opts, servicesToInit) {
         if (deviceError) {
           return dispatch(syncActions.initFailure(deviceError));
         }
-        log('Initializing CareLink');
-        carelink.init({ api }, function(carelinkError, carelinkResult){
-          if (carelinkError) {
-            return dispatch(syncActions.initFailure(carelinkError));
+        log('Initializing api');
+        api.init(function(apiError, apiResult){
+          if (apiError) {
+            return dispatch(syncActions.initFailure(apiError));
           }
-          log('Initializing api');
-          api.init(function(apiError, apiResult){
-            if (apiError) {
-              return dispatch(syncActions.initFailure(apiError));
-            }
-            log('Setting all api hosts');
-            api.setHosts(_.pick(opts, ['API_URL', 'UPLOAD_URL', 'BLIP_URL', 'environment']));
-            dispatch(syncActions.setForgotPasswordUrl(api.makeBlipUrl(paths.FORGOT_PASSWORD)));
-            dispatch(syncActions.setSignUpUrl(api.makeBlipUrl(paths.SIGNUP)));
-            dispatch(syncActions.setNewPatientUrl(api.makeBlipUrl(paths.NEW_PATIENT)));
-            let session = apiResult;
-            if (session === undefined) {
-              dispatch(setPage(pages.LOGIN));
-              dispatch(syncActions.initSuccess());
-              return dispatch(doVersionCheck());
-            }
+          log('Setting all api hosts');
+          api.setHosts(_.pick(opts, ['API_URL', 'UPLOAD_URL', 'BLIP_URL', 'environment']));
+          dispatch(syncActions.setForgotPasswordUrl(api.makeBlipUrl(paths.FORGOT_PASSWORD)));
+          dispatch(syncActions.setSignUpUrl(api.makeBlipUrl(paths.SIGNUP)));
+          dispatch(syncActions.setNewPatientUrl(api.makeBlipUrl(paths.NEW_PATIENT)));
+          let session = apiResult;
+          if (session === undefined) {
+            dispatch(setPage(pages.LOGIN));
+            dispatch(syncActions.initSuccess());
+            return dispatch(doVersionCheck());
+          }
 
-            api.user.initializationInfo((err, results) => {
-              if (err) {
-                return dispatch(syncActions.initFailure(err));
-              }
-              dispatch(syncActions.initSuccess());
-              dispatch(doVersionCheck());
-              dispatch(syncActions.setUserInfoFromToken({
-                user: results[0],
-                profile: results[1],
-                memberships: results[2]
-              }));
-              const { uploadTargetUser } = getState();
-              if (uploadTargetUser !== null) {
-                dispatch(syncActions.setBlipViewDataUrl(
-                  api.makeBlipUrl(actionUtils.viewDataPathForUser(uploadTargetUser))
-                ));
-              }
-              dispatch(retrieveTargetsFromStorage());
-            });
+          api.user.initializationInfo((err, results) => {
+            if (err) {
+              return dispatch(syncActions.initFailure(err));
+            }
+            dispatch(syncActions.initSuccess());
+            dispatch(doVersionCheck());
+            dispatch(syncActions.setUserInfoFromToken({
+              user: results[0],
+              profile: results[1],
+              memberships: results[2]
+            }));
+            const { uploadTargetUser } = getState();
+            if (uploadTargetUser !== null) {
+              dispatch(syncActions.setBlipViewDataUrl(
+                api.makeBlipUrl(actionUtils.viewDataPathForUser(uploadTargetUser))
+              ));
+            }
+            dispatch(retrieveTargetsFromStorage());
           });
         });
       });
@@ -169,56 +161,6 @@ export function doLogout() {
         dispatch(syncActions.logoutSuccess());
         dispatch(setPage(pages.LOGIN, actionSources.USER));
       }
-    });
-  };
-}
-
-export function doCareLinkUpload(deviceKey, creds, utc) {
-  return (dispatch, getState) => {
-    const { api, carelink } = services;
-    const version = versionInfo.semver;
-    const { devices, targetTimezones, uploadTargetUser } = getState();
-
-    const targetDevice = devices[deviceKey];
-
-    dispatch(syncActions.fetchCareLinkRequest(uploadTargetUser, deviceKey));
-
-    api.upload.fetchCarelinkData({
-      carelinkUsername: creds.username,
-      carelinkPassword: creds.password,
-      daysAgo: daysForCareLink,
-      targetUserId: uploadTargetUser
-    }, (err, data) => {
-      if (err) {
-        let fetchErr = new Error(errorText.E_FETCH_CARELINK);
-        let fetchErrProps = {
-          details: err.message,
-          utc: actionUtils.getUtc(utc),
-          code: 'E_FETCH_CARELINK',
-          version: version
-        };
-        dispatch(syncActions.fetchCareLinkFailure(errorText.E_FETCH_CARELINK));
-        return dispatch(syncActions.uploadFailure(fetchErr, fetchErrProps, targetDevice));
-      }
-      if (data.search(/302 Moved Temporarily/) !== -1) {
-        let credsErr = new Error(errorText.E_CARELINK_CREDS);
-        let credsErrProps = {
-          utc: actionUtils.getUtc(utc),
-          code: 'E_CARELINK_CREDS',
-          version: version
-        };
-        dispatch(syncActions.fetchCareLinkFailure(errorText.E_CARELINK_CREDS));
-        return dispatch(syncActions.uploadFailure(credsErr, credsErrProps, targetDevice));
-      }
-      dispatch(syncActions.fetchCareLinkSuccess(uploadTargetUser, deviceKey));
-
-      const opts = {
-        targetId: uploadTargetUser,
-        timezone: targetTimezones[uploadTargetUser],
-        progress: actionUtils.makeProgressFn(dispatch),
-        version: version
-      };
-      carelink.upload(data, opts, actionUtils.makeUploadCb(dispatch, getState, 'E_CARELINK_UPLOAD', utc));
     });
   };
 }
@@ -320,12 +262,7 @@ export function doUpload(deviceKey, opts, utc) {
       const targetDevice = devices[deviceKey];
       const deviceType = targetDevice.source.type;
 
-      if (_.includes(['device', 'block'], deviceType)) {
-        dispatch(doDeviceUpload(targetDevice.source.driverId, opts, utc));
-      }
-      else if (deviceType === 'carelink') {
-        dispatch(doCareLinkUpload(deviceKey, opts, utc));
-      }
+      dispatch(doDeviceUpload(targetDevice.source.driverId, opts, utc));
     });
   };
 }

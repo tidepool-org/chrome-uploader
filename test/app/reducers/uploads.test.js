@@ -29,22 +29,6 @@ describe('uploads', () => {
       expect(uploads.uploadProgress(undefined, {})).to.be.null;
     });
 
-    it('should handle CARELINK_FETCH_REQUEST', () => {
-      let initialState = {
-        percentage: 0,
-        step: steps.start
-      };
-      let result = uploads.uploadProgress(initialState, {
-        type: actionTypes.CARELINK_FETCH_REQUEST
-      });
-      expect(result).to.deep.equal({
-        percentage: 0,
-        step: steps.carelinkFetch
-      });
-      // test to be sure not *mutating* state object but rather returning new!
-      expect(initialState === result).to.be.false;
-    });
-
     it('should handle DEVICE_DETECT_REQUEST', () => {
       let initialState = {
         percentage: 0,
@@ -124,68 +108,6 @@ describe('uploads', () => {
     const time = '2016-01-01T12:05:00.123Z';
     it('should return the initial state', () => {
       expect(uploads.uploadsByUser(undefined, {})).to.deep.equal({});
-    });
-
-    it('should handle CARELINK_FETCH_FAILURE', () => {
-      let initialState = {
-        [userId]: {
-          carelink: {history: [{start: time}], isFetching: true}
-        }
-      };
-      let result = uploads.uploadsByUser(initialState, {
-        type: actionTypes.CARELINK_FETCH_FAILURE
-      });
-      expect(result).to.deep.equal({
-        [userId]: {
-          carelink: {history: [{start: time}], isFetching: false}
-        }
-      });
-      // tests to be sure not *mutating* state object but rather returning new!
-      expect(initialState === result).to.be.false;
-      expect(initialState.a1b2c3 === result.a1b2c3).to.be.false;
-      expect(initialState.a1b2c3.carelink === result.a1b2c3.carelink).to.be.false;
-    });
-
-    it('should handle CARELINK_FETCH_REQUEST', () => {
-      let initialState = {
-        [userId]: {
-          carelink: {history: [{start: time}]}
-        }
-      };
-      let result = uploads.uploadsByUser(initialState, {
-        type: actionTypes.CARELINK_FETCH_REQUEST,
-        payload: { userId, deviceKey: 'carelink' }
-      });
-      expect(result).to.deep.equal({
-        [userId]: {
-          carelink: {history: [{start: time}], isFetching: true}
-        }
-      });
-      // tests to be sure not *mutating* state object but rather returning new!
-      expect(initialState === result).to.be.false;
-      expect(initialState.a1b2c3 === result.a1b2c3).to.be.false;
-      expect(initialState.a1b2c3.carelink === result.a1b2c3.carelink).to.be.false;
-    });
-
-    it('should handle CARELINK_FETCH_SUCCESS', () => {
-      let initialState = {
-        [userId]: {
-          carelink: {history: [{start: time}], isFetching: true}
-        }
-      };
-      let result = uploads.uploadsByUser(initialState, {
-        type: actionTypes.CARELINK_FETCH_SUCCESS,
-        payload: { userId, deviceKey: 'carelink' }
-      });
-      expect(result).to.deep.equal({
-        [userId]: {
-          carelink: {history: [{start: time}], isFetching: false}
-        }
-      });
-      // tests to be sure not *mutating* state object but rather returning new!
-      expect(initialState === result).to.be.false;
-      expect(initialState.a1b2c3 === result.a1b2c3).to.be.false;
-      expect(initialState.a1b2c3.carelink === result.a1b2c3.carelink).to.be.false;
     });
 
     it('should handle CHOOSING_FILE', () => {

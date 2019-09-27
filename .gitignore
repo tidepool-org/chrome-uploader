@@ -26,11 +26,6 @@ app/style.css.map
 main.js
 main.js.map
 
-test/carelink/overlaps/test-account.csv
-test/node/carelink/overlaps/test-account.csv
-test/carelink/testRemoveOverlapsFullTestFile.js
-test/node/carelink/testRemoveOverlapsFullTestFile.js
-
 lib/drivers/medtronic/cli/*.json
 lib/drivers/insulet/cli/*.ibf
 

@@ -348,41 +348,6 @@ export function logoutFailure() {
 }
 
 /*
- * relating to async action creator doCareLinkUpload
- */
-
-export function fetchCareLinkRequest(userId, deviceKey) {
-  return {
-    type: actionTypes.CARELINK_FETCH_REQUEST,
-    payload: { userId, deviceKey },
-    meta: {source: actionSources[actionTypes.CARELINK_FETCH_REQUEST]}
-  };
-}
-
-export function fetchCareLinkSuccess(userId, deviceKey) {
-  return {
-    type: actionTypes.CARELINK_FETCH_SUCCESS,
-    payload: { userId, deviceKey },
-    meta: {
-      source: actionSources[actionTypes.CARELINK_FETCH_SUCCESS],
-      metric: {eventName: metrics.CARELINK_FETCH_SUCCESS}
-    }
-  };
-}
-
-export function fetchCareLinkFailure(message) {
-  return {
-    type: actionTypes.CARELINK_FETCH_FAILURE,
-    error: true,
-    payload: new Error(message),
-    meta: {
-      source: actionSources[actionTypes.CARELINK_FETCH_FAILURE],
-      metric: {eventName: metrics.CARELINK_FETCH_FAILURE}
-    }
-  };
-}
-
-/*
  * relating to async action creator doUpload
  */
 

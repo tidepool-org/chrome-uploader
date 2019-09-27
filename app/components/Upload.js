@@ -53,9 +53,6 @@ export default class Upload extends Component {
 
   static defaultProps = {
     text: {
-      CARELINK_USERNAME: 'CareLink username',
-      CARELINK_PASSWORD: 'CareLink password',
-      CARELINK_DOWNLOADING: 'Downloading CareLink export...',
       MEDTRONIC_SERIAL_NUMBER: 'Pump Serial number',
       REMEMBER_SERIAL_NUMBER: 'Remember serial number',
       MEDTRONIC_600_IS_LINKED: 'Meter and pump are linked',
@@ -75,7 +72,6 @@ export default class Upload extends Component {
   };
 
   state = {
-    carelinkFormIncomplete: true,
     medtronicFormIncomplete: true,
     medtronicSerialNumberValue: '',
     medtronicSerialNumberRemember: false,
@@ -106,7 +102,6 @@ export default class Upload extends Component {
             medtronicSerialNumberRemember: true,
             medtronicFormIncomplete: false,
           });
-          this.onCareLinkInputChange();
         }
     });
   }
@@ -158,7 +153,6 @@ export default class Upload extends Component {
       e.preventDefault();
     }
     this.setState({
-      carelinkFormIncomplete: true,
       medtronicFormIncomplete: true,
       medtronicSerialNumberValue: '',
       medtronic600FormIncomplete: false,
@@ -196,19 +190,6 @@ export default class Upload extends Component {
     const { upload } = this.props;
     let file = e.target.files[0];
     this.props.readFile(file, upload.source.extension);
-  };
-
-  onCareLinkInputChange = () => {
-    const { refs } = this;
-    let username = refs.username && refs.username.value;
-    let password = refs.password && refs.password.value;
-
-    if (!username || !password) {
-      this.setState({carelinkFormIncomplete: true});
-    }
-    else {
-      this.setState({carelinkFormIncomplete: false});
-    }
   };
 
   onMedtronicSerialNumberRememberChange = e => {
@@ -671,10 +652,6 @@ export default class Upload extends Component {
       return <div className={styles.progress}></div>;
     }
 
-    if (this.isFetchingCareLinkData()) {
-      return <div className={styles.progress}><LoadingBar/></div>;
-    }
-
     let percentage = upload.progress && upload.progress.percentage;
 
     // can be equal to 0, so check for null or undefined
@@ -719,9 +696,6 @@ export default class Upload extends Component {
 
   renderStatus() {
     const { upload } = this.props;
-    if (this.isFetchingCareLinkData()) {
-      return <div className={styles.status}>{this.props.text.CARELINK_DOWNLOADING}</div>;
-    }
 
     if (upload.uploading) {
       return <div className={styles.status}>{this.props.text.UPLOAD_PROGRESS + this.props.upload.progress.percentage + '%'}</div>;
@@ -765,11 +739,5 @@ export default class Upload extends Component {
       }
       return false;
     }
-  }
-
-  isFetchingCareLinkData() {
-    const { upload } = this.props;
-    return (_.get(upload, 'source.type', null) === 'carelink') &&
-      (upload.isFetching);
   }
 }
