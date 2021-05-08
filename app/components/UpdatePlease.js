@@ -20,7 +20,7 @@ import PropTypes from 'prop-types';
 
 import styles from '../../styles/components/VersionCheck.module.less';
 
-import { remote } from 'electron';
+const remote = require('@electron/remote');
 const i18n = remote.getGlobal( 'i18n' );
 
 export default class UpdatePlease extends Component {

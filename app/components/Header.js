@@ -33,7 +33,7 @@ import { pages, pagesMap } from '../constants/otherConstants';
 import styles from '../../styles/components/Header.module.less';
 import logo from '../../images/Tidepool_Logo_Light x2.png';
 
-import { remote } from 'electron';
+const remote = require('@electron/remote');
 const i18n = remote.getGlobal( 'i18n' );
 
 export class Header extends Component {

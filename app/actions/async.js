@@ -31,6 +31,7 @@ import * as metrics from '../constants/metrics';
 import * as syncActions from './sync';
 import * as actionUtils from './utils';
 import personUtils from '../../lib/core/personUtils';
+import driverManifests from '../../lib/core/driverManifests';
 
 let services = {};
 let versionInfo = {};
@@ -300,10 +301,30 @@ export function doDeviceUpload(driverId, opts = {}, utc) {
   };
 }
 
-export function doUpload(deviceKey, opts, utc) {
+export function doUpload (deviceKey, opts, utc) {
   return async (dispatch, getState) => {
 
     const { devices, uploadTargetUser, working } = getState();
+
+    const targetDevice = _.get(devices, deviceKey);
+    const driverId = _.get(targetDevice, 'source.driverId');
+    const driverManifest = _.get(driverManifests, driverId);
+
+    if (driverManifest && driverManifest.mode === 'serial') {
+      dispatch(syncActions.uploadRequest(uploadTargetUser, devices[deviceKey], utc));
+
+      const filters = driverManifest.usb.map(({vendorId, productId}) => ({
+        usbVendorId: vendorId,
+        usbProductId: productId
+      }));
+
+      try {
+        opts.port = await navigator.serial.requestPort({ filters: filters });
+      } catch (err) {
+        // not returning error, as we'll attempt user-space driver instead
+        console.log('Error:', err);
+      }
+    }
 
     if (opts && opts.ble) {
       // we need to to scan for Bluetooth devices before the version check,

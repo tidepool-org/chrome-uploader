@@ -17,7 +17,7 @@
 
 var React = require('react');
 var styles = require('../../styles/components/App.module.less');
-import { remote } from 'electron';
+const remote = require('@electron/remote');
 const i18n = remote.getGlobal( 'i18n' );
 
 class Loading extends React.Component {

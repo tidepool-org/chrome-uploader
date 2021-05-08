@@ -25,7 +25,7 @@ import { sync as syncActions } from '../actions/';
 
 import styles from '../../styles/components/UpdateDriverModal.module.less';
 
-import { remote } from 'electron';
+const remote = require('@electron/remote');
 const i18n = remote.getGlobal( 'i18n' );
 
 export class UpdateDriverModal extends Component {

@@ -19,8 +19,7 @@ module.exports = api => {
     presets: [
       [
         require('@babel/preset-env'),
-        { 
-          targets: { 'electron': require('electron/package.json').version },
+        {
           useBuiltIns: 'usage',
           corejs: 2,
           modules: 'commonjs'

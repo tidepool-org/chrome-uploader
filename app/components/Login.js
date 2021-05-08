@@ -23,7 +23,7 @@ import { bindActionCreators } from 'redux';
 import actions from '../actions/';
 const asyncActions = actions.async;
 
-import { remote } from 'electron';
+const remote = require('@electron/remote');
 const i18n = remote.getGlobal( 'i18n' );
 
 export class Login extends Component {

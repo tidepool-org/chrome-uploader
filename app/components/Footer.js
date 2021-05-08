@@ -25,7 +25,7 @@ import styles from '../../styles/components/Footer.module.less';
 import logo from '../../images/JDRF_Reverse_Logo x2.png';
 import debugMode from '../utils/debugMode';
 
-import { remote } from 'electron';
+const remote = require('@electron/remote');
 const i18n = remote.getGlobal( 'i18n' );
 
 export default class Footer extends Component {

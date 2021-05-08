@@ -31,7 +31,7 @@ import TimezoneDropdown from '../components/TimezoneDropdown';
 import UploadList from '../components/UploadList';
 import ViewDataLink from '../components/ViewDataLink';
 import UserDropdown from '../components/UserDropdown';
-import { remote } from 'electron';
+const remote = require('@electron/remote');
 
 const asyncActions = actions.async;
 const syncActions = actions.sync;

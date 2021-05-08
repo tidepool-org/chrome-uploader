@@ -22,7 +22,7 @@ var sundial = require('sundial');
 var personUtils = require('../../lib/core/personUtils');
 var cx = require('classnames');
 
-import { remote } from 'electron';
+const remote = require('@electron/remote');
 const i18n = remote.getGlobal( 'i18n' );
 
 var styles = require('../../styles/components/ClinicUserBlock.module.less');
@@ -52,7 +52,7 @@ class ClinicUserBlock extends React.Component {
       [styles.edit]: true,
       [styles.disabled]: isUploadInProgress
     });
-    
+
     return (
       <div className={styles.main}>
         <div className={styles.nameWrap}>

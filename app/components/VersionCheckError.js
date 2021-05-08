@@ -24,7 +24,7 @@ import errorText from '../constants/errors';
 import styles from '../../styles/components/VersionCheck.module.less';
 import CloudOff from '@material-ui/icons/CloudOff';
 
-import { remote } from 'electron';
+const remote = require('@electron/remote');
 const i18n = remote.getGlobal( 'i18n' );
 
 export default class VersionCheckError extends Component {

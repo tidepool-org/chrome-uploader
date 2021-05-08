@@ -15,7 +15,7 @@
  * == BSD2 LICENSE ==
  */
 
-import { remote } from 'electron';
+import remote from '@electron/remote';
 import plist from 'plist';
 import fs from 'fs';
 import path from 'path';

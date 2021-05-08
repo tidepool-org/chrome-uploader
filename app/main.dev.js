@@ -1,6 +1,6 @@
 /* global __ROLLBAR_POST_TOKEN__ */
 import _ from 'lodash';
-import { app, BrowserWindow, Menu, shell, ipcMain, crashReporter, dialog } from 'electron';
+import { app, BrowserWindow, Menu, shell, ipcMain, crashReporter, dialog, session } from 'electron';
 import os from 'os';
 import osName from 'os-name';
 import open from 'open';
@@ -13,11 +13,13 @@ import uploadDataPeriod from './utils/uploadDataPeriod';
 import i18n from 'i18next';
 import i18nextBackend from 'i18next-fs-backend';
 import i18nextOptions from './utils/config.i18next';
+import path from 'path';
 
 global.i18n = i18n;
 
 autoUpdater.logger = require('electron-log');
 autoUpdater.logger.transports.file.level = 'info';
+require('@electron/remote/main').initialize();
 
 let rollbar;
 if(process.env.NODE_ENV === 'production') {
@@ -38,7 +40,7 @@ crashReporter.start({
   uploadToServer: false
 });
 
-console.log('Crash logs can be found in:',crashReporter.getCrashesDirectory());
+console.log('Crash logs can be found in:', app.getPath('crashDumps'));
 console.log('Last crash report:', crashReporter.getLastCrashReport());
 
 let menu;
@@ -47,6 +49,11 @@ let mainWindow = null;
 
 // Web Bluetooth should only be an experimental feature on Linux
 app.commandLine.appendSwitch('enable-experimental-web-platform-features', true);
+app.commandLine.appendSwitch('enable-features', 'ElectronSerialChooser');
+
+// as of March 2021, node-usb is not yet context-aware, see
+// https://github.com/tessel/node-usb/issues/380 for details
+app.allowRendererProcessReuse = false;
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support'); // eslint-disable-line
@@ -55,7 +62,6 @@ if (process.env.NODE_ENV === 'production') {
 
 if (process.env.NODE_ENV === 'development') {
   require('electron-debug')(); // eslint-disable-line global-require
-  const path = require('path'); // eslint-disable-line
   const p = path.join(__dirname, '..', 'app', 'node_modules'); // eslint-disable-line
   require('module').globalPaths.push(p); // eslint-disable-line
 }
@@ -66,11 +72,20 @@ app.on('window-all-closed', () => {
 
 const installExtensions = async () => {
   if (process.env.NODE_ENV === 'development') {
-    const { default: installExtension, REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } = require('electron-devtools-installer');
+    const { default: installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
 
     try {
-      const name = await installExtension([REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS]);
+      const name = await installExtension([REDUX_DEVTOOLS]);
       console.log(`Added Extension:  ${name}`);
+
+      // electron-devtools-installer fails to install React Developer Tools on Electron v12,
+      // so for now we install it manually
+      await session.defaultSession.loadExtension(
+        path.join(__dirname, '..', 'extensions', 'react-devtools'),
+        // allowFileAccess is required to load the devtools extension on file:// URLs.
+        { allowFileAccess: true }
+      );
+      console.log('Added Extension: React Developer Tools');
     } catch (err) {
       console.log('An error occurred: ', err);
     }
@@ -103,8 +118,14 @@ function createWindow() {
     height: 769,
     resizable: resizable,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      contextIsolation: false, // so that we can access process from app.html
+      enableRemoteModule: true,
     }
+  });
+
+  mainWindow.webContents.on('render-process-gone', (e, details) => {
+    console.log('Render process gone:', details.reason);
   });
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
@@ -151,7 +172,7 @@ operating system, as soon as possible.`,
     mainWindow = null;
   });
 
-  mainWindow.webContents.on('select-bluetooth-device', (event, deviceList, callback) => {
+  mainWindow.webContents.on('select-bluetooth-device', (event, deviceList, webContents, callback) => {
     event.preventDefault();
     console.log('Device list:', deviceList);
     let [result] = deviceList;
@@ -160,6 +181,17 @@ operating system, as soon as possible.`,
       callback('');
     } else {
       callback(result.deviceId);
+    }
+  });
+
+  mainWindow.webContents.session.on('select-serial-port', (event, portList, webContents, callback) => {
+    event.preventDefault();
+    console.log('Port list:', portList);
+    const [selectedPort] = portList;
+    if (!selectedPort) {
+      callback('');
+    } else {
+      callback(selectedPort.portId);
     }
   });
 

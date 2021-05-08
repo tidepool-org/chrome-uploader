@@ -25,7 +25,7 @@ var sundial = require('sundial');
 var personUtils = require('../../lib/core/personUtils');
 var styles = require('../../styles/components/ClinicUserEdit.module.less');
 
-import { remote } from 'electron';
+const remote = require('@electron/remote');
 const i18n = remote.getGlobal( 'i18n' );
 
 function zeroPad(value){

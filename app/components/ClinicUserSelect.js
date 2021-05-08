@@ -26,7 +26,7 @@ var metrics = require('../constants/metrics');
 
 var styles = require('../../styles/components/ClinicUserSelect.module.less');
 
-import { remote } from 'electron';
+const remote = require('@electron/remote');
 const i18n = remote.getGlobal( 'i18n' );
 
 class ClinicUserSelect extends React.Component {

@@ -20,12 +20,10 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { remote } from 'electron';
+import remote from '@electron/remote';
 import * as metrics from '../constants/metrics';
 import { Route, Switch } from 'react-router-dom';
 import dns from 'dns';
-
-const { Menu } = remote;
 
 import bows from 'bows';
 
@@ -226,7 +224,7 @@ export class App extends Component {
         }
       });
     }
-    const menu = Menu.buildFromTemplate(template);
+    const menu = remote.Menu.buildFromTemplate(template);
     menu.popup(remote.getCurrentWindow());
   };
 

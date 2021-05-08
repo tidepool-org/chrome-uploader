@@ -20,7 +20,7 @@ var PropTypes = require('prop-types');
 var React = require('react');
 var cx = require('classnames');
 var node_os = require('os');
-import { remote } from 'electron';
+const remote = require('@electron/remote');
 const i18n = remote.getGlobal( 'i18n' );
 
 import { urls } from '../constants/otherConstants';

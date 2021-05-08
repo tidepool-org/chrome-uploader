@@ -21,10 +21,8 @@ var expect = require('salinity').expect;
 var serialDevice = require('../../lib/serialDevice.js');
 
 /*
-setBitrate: setBitrate,
 connect: connect,
 disconnect: disconnect,
-changeBitRate: changeBitRate,
 discardBytes: discardBytes,
 readSerial: readSerial,
 writeSerial: writeSerial,
@@ -46,19 +44,9 @@ describe('serialDevice.js', () => {
     device = serialDevice(config);
   });
 
-  describe('setBitrate', () => {
-    test('exists', () => {
-      expect(device).itself.to.respondTo('setBitrate');
-    });
-  });
   describe('connect', () => {
     test('exists', () => {
       expect(device).itself.to.respondTo('connect');
-    });
-  });
-  describe('changeBitRate', () => {
-    test('exists', () => {
-      expect(device).itself.to.respondTo('changeBitRate');
     });
   });
   describe('discardBytes', () => {

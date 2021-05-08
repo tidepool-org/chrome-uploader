@@ -28,7 +28,13 @@ import devices from '../../../app/reducers/devices';
 
 import { UnsupportedError } from '../../../app/utils/errors';
 
-jest.mock('electron');
+jest.mock('@electron/remote', () => ({
+  getGlobal: (string) => {
+    if (string === 'i18n') {
+        return { t: (string) => string };
+    }
+  }
+}));
 
 describe('misc reducers', () => {
   describe('devices', () => {
