@@ -6,18 +6,29 @@
     <script>
       (function() {
         process = { env: { HOT: true } };
-        if (!process.env.HOT) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = './dist/style.css';
-          // HACK: Writing the script path should be done with webpack
-          document.getElementsByTagName('head')[0].appendChild(link);
-        }
       }());
     </script>
+    <link rel="shortcut icon" href="icon.ico">
   </head>
   <body>
-    <div id="app"></div>
+    <form id="login">
+      <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username">
+      </div>
+
+      <div>
+          <label for="pass">Password:</label>
+          <input type="password" id="pass" name="password">
+      </div>
+
+      <input type="submit" value="Sign in">
+    </form>
+    <div id="app" hidden>
+      <select id="devices"></select>
+      <progress id="progressBar" value="0" max="100"></progress>
+      <button id="connect">Upload</button>
+    </div>
     <script>
       {
         // to enable `bows` logging we set debug here

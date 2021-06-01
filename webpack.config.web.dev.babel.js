@@ -237,7 +237,8 @@ export default merge.smart(baseConfig, {
 
     new HtmlWebpackPlugin({
       template: 'app/web.html',
-      inject: false
+      inject: false,
+      favicon: 'resources/icon.ico'
     }),
     new webpack.NamedModulesPlugin(),
   ],

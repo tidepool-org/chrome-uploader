@@ -5,8 +5,8 @@
 import _ from 'lodash';
 import path from 'path';
 import webpack from 'webpack';
-import { dependencies as externals } from './app/package.json';
-import { optionalDependencies as additionalExternals } from './app/package.json';
+// import { dependencies as externals } from './app/package.json';
+// import { optionalDependencies as additionalExternals } from './app/package.json';
 
 export default {
   module: {
@@ -57,5 +57,8 @@ export default {
     new webpack.NamedModulesPlugin()
   ],
 
-  externals: [...Object.keys(externals || {}), ...Object.keys(additionalExternals || {})]
+  // externals: [...Object.keys(externals || {}), ...Object.keys(additionalExternals || {})]
+  externals: {
+    usb: 'usb'
+  }
 };

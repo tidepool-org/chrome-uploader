@@ -1,15 +1,15 @@
 /* eslint global-require: off */
 const developmentEnvironments = ['development', 'test'];
 
-const developmentPlugins = [require('react-hot-loader/babel')];
+// const developmentPlugins = [require('react-hot-loader/babel')];
 
 const productionPlugins = [
   require('babel-plugin-dev-expression'),
 
   // babel-preset-react-optimize
-  require('@babel/plugin-transform-react-constant-elements'),
-  require('@babel/plugin-transform-react-inline-elements'),
-  require('babel-plugin-transform-react-remove-prop-types')
+  // require('@babel/plugin-transform-react-constant-elements'),
+  // require('@babel/plugin-transform-react-inline-elements'),
+  // require('babel-plugin-transform-react-remove-prop-types')
 ];
 
 module.exports = api => {
@@ -59,7 +59,7 @@ module.exports = api => {
       [require('@babel/plugin-proposal-class-properties'), { loose: true }],
       require('@babel/plugin-proposal-json-strings'),
 
-      ...(development ? developmentPlugins : productionPlugins),
+      ...(!development ? productionPlugins : []),
       require('babel-plugin-add-module-exports'),
       require('@babel/plugin-transform-classes'),
     ],
