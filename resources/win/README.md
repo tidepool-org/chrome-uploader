@@ -24,9 +24,7 @@ To build and sign the driver, check that you have the specified requirements ins
 
 In `resources\win`:
 
-- `signtool sign /v /ac "DigiCertHighAssuranceEVRootCA.crt" /tr http://timestamp.digicert.com /td sha256 /fd sha256 /s my /n "Tidepool Project"  /sha1 EC02571EB23521ECF39813F1910157CAA08DE97A tidepoolvcp.cat`
-- `signtool sign /v /ac "DigiCertHighAssuranceEVRootCA.crt" /tr http://timestamp.digicert.com /td sha256 /fd sha256 /s my /n "Tidepool Project"  /sha1 EC02571EB23521ECF39813F1910157CAA08DE97A tidepoolhid.cat`
-- `signtool sign /v /ac "DigiCertHighAssuranceEVRootCA.crt" /tr http://timestamp.digicert.com /td sha256 /fd sha256 /s my /n "Tidepool Project"  /sha1 EC02571EB23521ECF39813F1910157CAA08DE97A tidepoolusb.cat`
+- `signtool sign /v /ac "DigiCertHighAssuranceEVRootCA.crt" /tr http://timestamp.digicert.com /td sha256 /fd sha256 /s my /n "Tidepool Project"  /sha1 EC02571EB23521ECF39813F1910157CAA08DE97A *.cat`
 
 ### Submit Windows 10 drivers to hardware dashboard for attestation signing
 
@@ -48,7 +46,7 @@ Download the signed drivers from the hardware portal and update the `resources/w
 	signtool verify /kp /v /c tidepoolvcp.cat i386\tiusb.sys
 	signtool verify /kp /v /c tidepoolvcp.cat amd64\ser2pl64.sys
 	signtool verify /kp /v /c tidepoolvcp.cat i386\ser2pl.sys
-	signtool verify /kp /v /c tidepoolvcp.cat amd64\winusbcoinstaller2.dll
+	signtool verify /kp /v /c tidepoolusb.cat amd64\wdfcoinstaller01009.dll
 
 ## Notes
 

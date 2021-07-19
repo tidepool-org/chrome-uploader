@@ -320,14 +320,6 @@ keytar@5.6.0:
     nan "2.14.1"
     prebuild-install "5.3.3"
 
-lzo-decompress@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/lzo-decompress/-/lzo-decompress-1.0.1.tgz#fe8649ba73fe20a4ebafd2f119ad7c1db57949dd"
-  integrity sha512-C9GZmL2MwkxIFw6EuwvA82WUTxWwMN/yPToMKOpqmg72Yq9+V2qQFwukaacvXyd5ICv5i1EiVfYvHmx6ObfNeA==
-  dependencies:
-    napi-macros "2.0.0"
-    node-gyp-build "4.2.0"
-
 mimic-response@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/mimic-response/-/mimic-response-1.0.1.tgz#4923538878eef42063cb8a3e3b0798781487ab1b"
@@ -394,27 +386,12 @@ napi-build-utils@^1.0.1:
   resolved "https://registry.yarnpkg.com/napi-build-utils/-/napi-build-utils-1.0.1.tgz#1381a0f92c39d66bf19852e7873432fc2123e508"
   integrity sha512-boQj1WFgQH3v4clhu3mTNfP+vOBxorDlE8EKiMjUlLG3C4qAESnn9AxIOkFgTR2c9LtzNjPrjS60cT27ZKBhaA==
 
-napi-macros@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/napi-macros/-/napi-macros-2.0.0.tgz#2b6bae421e7b96eb687aa6c77a7858640670001b"
-  integrity sha512-A0xLykHtARfueITVDernsAWdtIMbOJgKgcluwENp3AlsKN/PloyO10HtmoqnFAQAcxPkgZN7wdfPfEd0zNGxbg==
-
 node-abi@^2.7.0:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-2.8.0.tgz#bd2e88dbe6a6871e6dd08553e0605779325737ec"
   integrity sha512-1/aa2clS0pue0HjckL62CsbhWWU35HARvBDXcJtYKbYR7LnIutmpxmXbuDMV9kEviD2lP/wACOgWmmwljghHyQ==
   dependencies:
     semver "^5.4.1"
-
-node-gyp-build@4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-4.2.0.tgz#2c2b05f461f4178641a6ce2d7159f04094e9376d"
-  integrity sha512-4oiumOLhCDU9Rronz8PZ5S4IvT39H5+JEv/hps9V8s7RSLhsac0TCP78ulnHXOo8X1wdpPiTayGlM1jr4IbnaQ==
-
-node-gyp-build@4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-4.2.1.tgz#f28f0d3d3ab268d48ab76c6f446f19bc3d0db9dc"
-  integrity sha512-XyCKXsqZfLqHep1hhsMncoXuUNt/cXCjg1+8CLbu69V1TKuPiOeSGbL9n+k/ByKH8UT0p4rdIX8XkTRZV0i7Sw==
 
 node-hid@1.1.0:
   version "1.1.0"
@@ -424,14 +401,6 @@ node-hid@1.1.0:
     bindings "^1.5.0"
     nan "^2.14.0"
     prebuild-install "^5.3.3"
-
-node-mtp@0.3.15:
-  version "0.3.15"
-  resolved "https://registry.yarnpkg.com/node-mtp/-/node-mtp-0.3.15.tgz#1fac8ab796ee920e4670d89f33801d57c7ce454e"
-  integrity sha512-puHG2uzzPT164wNl0xgs/8fuOeYGHnVtWjXA0fGdkUpi8diEdPFR7dUcGue4VDxbCiSCtvvYkxFu61HpT2GeXw==
-  dependencies:
-    napi-macros "2.0.0"
-    node-gyp-build "4.2.1"
 
 noop-logger@^0.1.1:
   version "0.1.1"

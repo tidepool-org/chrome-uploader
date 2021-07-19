@@ -1,6 +1,6 @@
 {
   "name": "tidepool-uploader",
-  "version": "2.37.1",
+  "version": "2.37.1-dash-mtp-fixes.8",
   "description": "Tidepool Project Universal Uploader",
   "private": true,
   "main": "main.prod.js",
@@ -62,7 +62,6 @@
     "is-electron": "2.2.0",
     "lodash": "4.17.21",
     "lzo-wasm": "0.0.4",
-    "node-powershell": "4.0.0",
     "os-name": "3.1.0",
     "pl2303": "0.0.5",
     "plist": "3.0.1",
@@ -85,7 +84,8 @@
     "sundial": "1.6.0",
     "tidepool-platform-client": "0.44.0",
     "usb-cdc-acm": "0.1.1",
-    "uuid": "7.0.3"
+    "uuid": "7.0.3",
+    "webmtp": "0.1.0"
   },
   "browserslist": "last 2 electron major versions",
   "bin": {

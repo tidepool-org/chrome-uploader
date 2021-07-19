@@ -1,0 +1,45 @@
+[Version]
+Signature   = "$Windows NT$"
+Class       = USBDevice
+ClassGUID   = {88BAE032-5A81-49f0-BC3D-A4FF138216D6}
+Provider    = %ManufacturerName%
+CatalogFile = WinUSBInstallation.cat
+DriverVer   = 09/04/2012,13.54.20.543
+
+; ========== Manufacturer/Models sections ===========
+
+[Manufacturer]
+%ManufacturerName% = Standard,NTx86,NTia64,NTamd64
+
+[Standard.NTx86]
+%USB\MyCustomDevice.DeviceDesc% = USB_Install,USB\VID_0E8D&PID_201D&MI_00
+
+[Standard.NTia64]
+%USB\MyCustomDevice.DeviceDesc% = USB_Install,USB\VID_0E8D&PID_201D&MI_00
+
+[Standard.NTamd64]
+%USB\MyCustomDevice.DeviceDesc% = USB_Install,USB\VID_0E8D&PID_201D&MI_00
+
+; =================== Installation ===================
+
+[USB_Install]
+Include = winusb.inf
+Needs   = WINUSB.NT
+
+[USB_Install.Services]
+Include = winusb.inf
+Needs   = WINUSB.NT.Services
+
+[USB_Install.HW]
+AddReg = Dev_AddReg
+
+[Dev_AddReg]
+HKR,,DeviceInterfaceGUIDs,0x10000,"{D252C909-8325-43A8-9235-0169BF676338}"
+
+; =================== Strings ===================
+
+[Strings]
+ManufacturerName              = "Tidepool"
+ClassName                     = "WinUSB devices"
+USB\MyCustomDevice.DeviceDesc = "Tidepool USB driver (WinUSB)"
+REG_MULTI_SZ = 0x00010000

@@ -18,6 +18,7 @@ tidepoolvcp.inf
 tidepoolhid.inf
 tidepoolusb.inf
 ftdibus.inf
+webusb.inf
 .Set DestinationDir=win10\amd64
 amd64\ftbusui.dll
 amd64\ftcserco.dll
