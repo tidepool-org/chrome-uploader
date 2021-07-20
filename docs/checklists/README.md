@@ -15,6 +15,7 @@ Checklists for the implementation of drivers for reading data from diabetes devi
    * [Medtronic 5/7-series (CGM data)](medtronicCGM.md)
    * [Medtronic 6-series (pump data)](medtronic600.md)
    * [Medtronic 6-series (CGM data)](medtronic600CGM.md)
+   * [MicroTech Equil Pump](microTechEquil.md)
    * [OneTouch Ultra 2 (BGM)](oneTouchUltra2.md)
    * [OneTouch UltraMini (BGM)](oneTouchUltraMini.md)
    * [OneTouch Verio, Verio Flex and Verio Reflect (BGM))](oneTouchVerio.md)
